@@ -1,0 +1,11 @@
+Package: Saunders
+Title: Adds functionality to linear regression graphing functions in ggplot. Named after Professor Garrett Saunders
+Version: 0.0.0.9000
+Authors@R: 
+    person("James", "Beeson", , "jamesbeeson01@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0007-2248-843X"))
+Description: Adds functionality to linear regression graphing functions in ggplot. Named after Professor Garrett Saunders
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
