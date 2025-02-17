@@ -56,11 +56,17 @@ geom_confidence <- function(lm, trans = identity, resolution = 500) {
   # Return ggplot2 layers: a confidence ribbon and a fitted line.
   # These can be added to an existing ggplot.
   list(
-    geom_ribbon(data = predicted_data,
-                aes(x = x, ymin = ymin, ymax = ymax), 
-                fill = "blue", alpha = 0.2),
-    geom_line(data = predicted_data, 
-              aes(x = x, y = y),
-              color = "blue", size = 1)
+    geom_ribbon(
+      data = predicted_data,
+      mapping = aes(x = x, ymin = ymin, ymax = ymax), 
+      fill = "blue", alpha = 0.2,
+      inherit.aes = FALSE
+    ),
+    geom_line(
+      data = predicted_data, 
+      mapping = aes(x = x, y = y),
+      color = "blue", size = 1,
+      inherit.aes = FALSE
+    )
   )
 }
