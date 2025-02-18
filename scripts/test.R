@@ -1,3 +1,5 @@
+library(devtools)
+install_github("jamesbeeson01/Saunders")
 library(tidyverse)
 library(Saunders)
 
