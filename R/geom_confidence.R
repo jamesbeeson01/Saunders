@@ -7,6 +7,7 @@
 #' @param lm A fitted linear model object (`lm()`), with a single predictor.
 #' @param trans A function to transform the predicted values and intervals (e.g., `exp` for log-transformed models). Default is `identity` (no transformation).
 #' @param resolution An integer specifying the number of points at which to evaluate the model. Default is 500.
+#' @param color A color for the resultant line and ribbon
 #'
 #' @return A list of ggplot2 layers: a confidence ribbon and a fitted line.
 #' @export
@@ -26,7 +27,7 @@
 #'     geom_point() +
 #'     geom_confidence(fit, trans = exp)
 #' }
-geom_confidence <- function(lm, trans = identity, resolution = 500) {
+geom_confidence <- function(lm, trans = identity, resolution = 500, color = "blue") {
   # Ensure the model has only one predictor
   if (length(lm$coefficients) > 2) {
     stop("geom_confidence() only supports models with a single predictor.")
@@ -59,13 +60,13 @@ geom_confidence <- function(lm, trans = identity, resolution = 500) {
     geom_ribbon(
       data = predicted_data,
       mapping = aes(x = x, ymin = ymin, ymax = ymax), 
-      fill = "blue", alpha = 0.2,
+      fill = color, alpha = 0.2,
       inherit.aes = FALSE
     ),
     geom_line(
       data = predicted_data, 
       mapping = aes(x = x, y = y),
-      color = "blue", size = 1,
+      color = color, size = 1,
       inherit.aes = FALSE
     )
   )
