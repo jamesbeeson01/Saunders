@@ -4,7 +4,7 @@
 \alias{geom_confidence}
 \title{Confidence Interval Layers for ggplot2}
 \usage{
-geom_confidence(lm, trans = identity, resolution = 500)
+geom_confidence(lm, trans = identity, resolution = 500, color = "blue")
 }
 \arguments{
 \item{lm}{A fitted linear model object (\code{lm()}), with a single predictor.}
@@ -12,6 +12,8 @@ geom_confidence(lm, trans = identity, resolution = 500)
 \item{trans}{A function to transform the predicted values and intervals (e.g., \code{exp} for log-transformed models). Default is \code{identity} (no transformation).}
 
 \item{resolution}{An integer specifying the number of points at which to evaluate the model. Default is 500.}
+
+\item{color}{A color for the resultant line and ribbon}
 }
 \value{
 A list of ggplot2 layers: a confidence ribbon and a fitted line.
