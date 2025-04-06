@@ -5,6 +5,9 @@ Authors@R:
     person("James", "Beeson", , "jamesbeeson01@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0007-2248-843X"))
 Description: Adds functionality to linear regression graphing functions in ggplot. Named after Professor Garrett Saunders
+Imports:
+    ggplot2,
+    dplyr
 License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
