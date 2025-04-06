@@ -1,0 +1,83 @@
+---
+title: "Saunders Package Function Demonstrations"
+output:
+  html_document:
+    theme: cerulean
+---
+
+Find the package at [github.com/jamesbeeson01/Saunders](https://www.github.com/jamesbeeson01/Saunders)
+
+Install the Saunders package with `devtools::install_github("jamesbeeson01/Saunders")` and load it with `library(Saunders)`. Has ggplot and dplyr dependencies
+
+```{r, warning=FALSE, message=FALSE}
+#devtools::install_github("jamesbeeson01/Saunders")
+library(tidyverse)
+library(Saunders)
+```
+
+# geom_fit()
+
+This function uses predict() to create any line from any linear model, even high dimensional models with y transformations. It is meant to imitate geom_smooth in that it creates a line with a confidence interval, but it can also use a prediction interval if specified.
+
+It assumes the first variable in the lm (i.e. $\beta_1$) is the x axis. This is a potential place to improve the function. It also does not infer any additional variables if they are not provided, and does not change values dynamically (like with facet_wrap or group)
+
+- `model` A linear model (lm()) to create a line from using predict(). The function attempts to automatically extract the primary predictor (x) variable from the model object.
+- `newdata` An optional data frame containing values for other predictor variables in the model (if any) to be held constant during prediction. If `NA` (default), predictions are made only based on the primary predictor sequence. Note: The current internal implementation uses `cbind`, ensure `newdata` is structured appropriately (e.g., a single row data frame with the constant values).
+- `resolution` An integer specifying the number of points across the range of the primary predictor (x) at which to evaluate the model. Default is 500.
+- `color` A character string specifying the color for the resultant line and ribbon. Default is "blue".
+- `interval` A character string specifying the type of interval required: "confidence" (default) or "prediction". Passed to `predict()`.
+- `trans` A function to transform the predicted values and interval bounds (e.g., `exp` for log-transformed response models). Default is `identity` (no transformation).
+- `se` Removes confidence band if specified FALSE (similar to geom_smooth). Defaults to TRUE
+
+
+#### Y Transformations
+
+```{r}
+lm.log <- lm(log(hwy) ~ displ, data = mpg)
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_fit(lm.log, trans = exp)
+```
+
+#### Prediction Interval
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_fit(lm.log, trans = exp, interval = "prediction", color = "green")
+```
+
+#### Complex X Functions
+
+```{r}
+lm.displ2 <- lm(hwy ~ displ + I(displ^2), mpg)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_fit(lm.displ2)
+```
+
+#### Additional Variables
+
+```{r}
+lm.drv <- lm(hwy ~ displ + I(displ^2) + displ:drv, mpg)
+
+ggplot(mpg, aes(displ, hwy, color = drv)) +
+  geom_point() +
+  geom_fit(lm.drv, data.frame(drv = "4"), color = "red") +
+  geom_fit(lm.drv, data.frame(drv = "f"), color = "green") +
+  geom_fit(lm.drv, data.frame(drv = "r"), color = "blue") +
+  scale_color_manual(values = c("red", "green", "blue"))
+```
+
+#### se = FALSE
+
+```{r}
+ggplot(mpg, aes(displ, hwy, color = drv)) +
+  geom_point() +
+  geom_fit(lm.drv, data.frame(drv = "4"), color = "red", se = FALSE) +
+  geom_fit(lm.drv, data.frame(drv = "f"), color = "green", se = FALSE) +
+  geom_fit(lm.drv, data.frame(drv = "r"), color = "blue", se = FALSE) +
+  scale_color_manual(values = c("red", "green", "blue"))
+```

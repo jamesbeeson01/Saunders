@@ -9,7 +9,7 @@ Example:
 
 ```
 install.packages("devtools")
-install_github('Saunders', 'jamesbeeson01')
+devtools::install_github('jamesbeeson01/Saunders')
 
 library(Saunders)
 ```
@@ -21,21 +21,21 @@ lm.displ2 <- lm(hwy ~ displ + I(displ^2), mpg)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  geom_predict(lm.displ2)
+  geom_fit(lm.displ2)
 ```
 
 See test.Rmd for more examples
 
 ## TODO
 
-- Remove geom_confidence (superseded by geom_predict)
+- Remove geom_confidence (superseded by geom_fit)
 - Change function to geom_transform
 - Add se = FALSE
 - Match the transformation to boxCox
   - In other words, allow a number, such as 0.5
 - rename lm argument to model
 
-geom_predict
+geom_fit
 - Coloring is not intuitive - does not match legend or chart aesthetic
 - Does not play with ggplot aesthetics (ie color)
 - Does not facet

@@ -13,7 +13,8 @@
 #' @param color A character string specifying the color for the resultant line and ribbon. Default is "blue".
 #' @param interval A character string specifying the type of interval required: "confidence" (default) or "prediction". Passed to `predict()`.
 #' @param trans A function to transform the predicted values and interval bounds (e.g., `exp` for log-transformed response models). Default is `identity` (no transformation).
-#'
+#' @param se Removes confidence band if specified FALSE (similar to geom_smooth). Defaults to TRUE
+#' 
 #' @return A list containing two ggplot2 layer objects: a `geom_ribbon` for the interval and a `geom_line` for the fitted values.
 #' 
 #' @importFrom ggplot2 aes geom_ribbon geom_line ggplot geom_point
@@ -40,20 +41,20 @@
 #' p <- ggplot(df, aes(x = x, y = y, color = group))
 #'
 #' # Add prediction lines and confidence intervals for each group
-#' # Note: geom_predict varies 'x', holds 'group' constant via 'newdata'
+#' # Note: geom_fit varies 'x', holds 'group' constant via 'newdata'
 #' p +
-#'   geom_predict(fit, newdata = data.frame(group = "A"), color = "red") +
-#'   geom_predict(fit, newdata = data.frame(group = "B"), color = "blue", interval = "prediction")
+#'   geom_fit(fit, newdata = data.frame(group = "A"), color = "red") +
+#'   geom_fit(fit, newdata = data.frame(group = "B"), color = "blue", interval = "prediction")
 #'
 #' # Example with log transformation
 #' df_log <- data.frame(x = 1:10, y = exp(0.5 + 0.2*(1:10) + rnorm(10, sd = 0.1)))
 #' fit_log <- lm(log(y) ~ x, data = df_log)
 #' ggplot(df_log, aes(x = x, y = y)) +
 #'  geom_point() +
-#'  geom_predict(fit_log, trans = exp, color = "purple")
+#'  geom_fit(fit_log, trans = exp, color = "purple")
 #' }
 
-geom_predict <- function(model, newdata = NA, resolution = 500, color = "blue", interval = "confidence", trans = identity) {
+geom_fit <- function(model, newdata = NA, resolution = 500, color = "blue", interval = "confidence", trans = identity, se = TRUE) {
 
   # Extract predictor values from model
   x <- model$model[[2]]
@@ -78,18 +79,27 @@ geom_predict <- function(model, newdata = NA, resolution = 500, color = "blue", 
   
   # Return ggplot2 layers: a confidence ribbon and a fitted line.
   # These can be added to an existing ggplot.
-  list(
-    geom_ribbon(
-      data = predicted_data,
-      mapping = aes(x = x, ymin = ymin, ymax = ymax), 
-      fill = color, alpha = 0.2,
-      inherit.aes = FALSE
-    ),
+  if (se) {
+    list(
+      geom_ribbon(
+        data = predicted_data,
+        mapping = aes(x = x, ymin = ymin, ymax = ymax), 
+        fill = color, alpha = 0.2,
+        inherit.aes = FALSE
+      ),
+      geom_line(
+        data = predicted_data, 
+        mapping = aes(x = x, y = y),
+        color = color, linewidth = 1,
+        inherit.aes = FALSE
+      )
+    )
+  } else {
     geom_line(
       data = predicted_data, 
       mapping = aes(x = x, y = y),
       color = color, linewidth = 1,
       inherit.aes = FALSE
     )
-  )
+  }
 }
